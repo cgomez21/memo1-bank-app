@@ -1,7 +1,13 @@
 package com.aninfo;
 
 import com.aninfo.model.Account;
+import com.aninfo.model.Transaction;
+import com.aninfo.model.Deposit;
+import com.aninfo.model.Withdraw;
 import com.aninfo.service.AccountService;
+import com.aninfo.service.TransactionService;
+import com.aninfo.service.DepositService;
+import com.aninfo.service.WithdrawService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +32,12 @@ public class Memo1BankApp {
 
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private TransactionService transactionService;
+	@Autowired
+	private WithdrawService withdrawService;
+	@Autowired
+	private DepositService depositService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Memo1BankApp.class, args);
@@ -65,14 +77,44 @@ public class Memo1BankApp {
 		accountService.deleteById(cbu);
 	}
 
-	@PutMapping("/accounts/{cbu}/withdraw")
+	@PutMapping("/accounts/withdraw/{cbu}/")
 	public Account withdraw(@PathVariable Long cbu, @RequestParam Double sum) {
 		return accountService.withdraw(cbu, sum);
 	}
 
-	@PutMapping("/accounts/{cbu}/deposit")
+	@PutMapping("/accounts/deposit/{cbu}/")
 	public Account deposit(@PathVariable Long cbu, @RequestParam Double sum) {
 		return accountService.deposit(cbu, sum);
+	}
+
+	@GetMapping("/transactions/")
+	public Collection<Transaction> getTransactions() {
+		return transactionService.getAllTransactions();
+	}
+
+	@GetMapping("/transactions/{id}")
+	public Transaction getTransaction(@PathVariable Long id) {
+		return transactionService.getTransactionById(id);
+	}
+
+	@DeleteMapping("/transactions/delete/{id}")
+	public void deleteTransaction(@PathVariable Long id) {
+		transactionService.deleteTransactionById(id);
+	}
+
+	@GetMapping("/transactions/account/{cbu}")
+	public Collection<Transaction> getTransactionsOfAccount(@PathVariable Long cbu) {
+		return transactionService.getTransactionsOfAccount(cbu);
+	}
+
+	@PostMapping("/transactions/deposit/{amount}")
+	public Deposit depositAmount(@RequestParam Long cbu, @PathVariable Double amount) {
+			return depositService.createDeposit(amount, accountService.findAccountByCbu(cbu));
+	}
+
+	@PostMapping("/transactions/withdraw/{amount}")
+	public Withdraw withdrawAmount(@RequestParam Long cbu, @PathVariable Double amount) {
+		return withdrawService.createWithdraw(amount, accountService.findAccountByCbu(cbu));
 	}
 
 	@Bean

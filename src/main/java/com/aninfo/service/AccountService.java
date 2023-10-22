@@ -4,6 +4,8 @@ import com.aninfo.exceptions.DepositNegativeSumException;
 import com.aninfo.exceptions.InsufficientFundsException;
 import com.aninfo.model.Account;
 import com.aninfo.repository.AccountRepository;
+import com.aninfo.service.WithdrawService;
+import com.aninfo.service.DepositService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +13,16 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
 
+
 @Service
 public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private WithdrawService withdrawService;
+    @Autowired
+    private DepositService depositService;
 
     public Account createAccount(Account account) {
         return accountRepository.save(account);
@@ -28,6 +35,8 @@ public class AccountService {
     public Optional<Account> findById(Long cbu) {
         return accountRepository.findById(cbu);
     }
+
+    public Account findAccountByCbu(Long cbu) { return accountRepository.findAccountByCbu(cbu); }
 
     public void save(Account account) {
         accountRepository.save(account);
@@ -45,7 +54,7 @@ public class AccountService {
             throw new InsufficientFundsException("Insufficient funds");
         }
 
-        account.setBalance(account.getBalance() - sum);
+        withdrawService.createWithdraw(sum, account);
         accountRepository.save(account);
 
         return account;
@@ -53,13 +62,13 @@ public class AccountService {
 
     @Transactional
     public Account deposit(Long cbu, Double sum) {
+        Account account = accountRepository.findAccountByCbu(cbu);
 
         if (sum <= 0) {
             throw new DepositNegativeSumException("Cannot deposit negative sums");
         }
 
-        Account account = accountRepository.findAccountByCbu(cbu);
-        account.setBalance(account.getBalance() + sum);
+        depositService.createDeposit(sum, account);
         accountRepository.save(account);
 
         return account;
