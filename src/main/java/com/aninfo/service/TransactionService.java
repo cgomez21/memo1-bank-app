@@ -7,6 +7,7 @@ import com.aninfo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Collection;
 @Service
 public class TransactionService {
@@ -16,7 +17,7 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Transaction getTransactionById(Long id) {
+    public Optional<Transaction> getTransactionById(Long id) {
         return transactionRepository.findTransactionById(id);
     }
 

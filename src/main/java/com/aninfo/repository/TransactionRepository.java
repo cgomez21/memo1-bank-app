@@ -7,11 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
+import java.util.Optional;
 
 @RepositoryRestResource
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
 
-    Transaction findTransactionById(Long id);
+    Optional<Transaction> findTransactionById(Long id);
 
     List<Transaction> findAllByAccount(Account account);
 
