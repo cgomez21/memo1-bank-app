@@ -1,6 +1,5 @@
 package com.aninfo.controllers;
 
-import com.aninfo.model.Account;
 import com.aninfo.model.Deposit;
 import com.aninfo.model.Transaction;
 import com.aninfo.model.Withdraw;

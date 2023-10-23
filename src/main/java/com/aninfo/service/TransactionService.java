@@ -17,12 +17,12 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Optional<Transaction> getTransactionById(Long id) {
-        return transactionRepository.findTransactionById(id);
-    }
-
     public Collection<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
+    }
+
+    public Optional<Transaction> getTransactionById(Long id) {
+        return transactionRepository.findTransactionById(id);
     }
 
     public Collection<Transaction> getTransactionsOfAccount(Long cbu) {
